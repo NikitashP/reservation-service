@@ -68,17 +68,6 @@ public class HotelService {
         return false;
     }
 
-    public Boolean addToAvailableRooms(String hotelId, long numberOfRoomsNeeded) {
-        final HttpEntity<AlterAvailableRoomsRequest> entity = new HttpEntity(new AlterAvailableRoomsRequest(hotelId, numberOfRoomsNeeded), headers);
-        try {
-            ResponseEntity<Void> responseEntity = restTemplate.exchange(hotelServiceUri + "/rooms/add", HttpMethod.PUT, entity, Void.class);
-            return responseEntity.getStatusCode().equals(HttpStatus.OK);
-        } catch (RestClientException e) {
-            LOGGER.error("Unable to add rooms for hotelId {}",hotelId, e);
-        }
-        return false;
-    }
-
     @Getter
     @Setter
     @AllArgsConstructor

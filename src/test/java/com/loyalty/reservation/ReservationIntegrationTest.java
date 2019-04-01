@@ -106,7 +106,6 @@ public class ReservationIntegrationTest {
 
         emailService.verify(0,postRequestedFor(urlEqualTo("/email")));
 
-
     }
 
 
@@ -217,14 +216,6 @@ public class ReservationIntegrationTest {
 
         mockGetApi(hotelId, hotelService, "/hotel/", asJsonString(hotel), OK);
 
-        AlterAvailableRoomsRequest alterAvailableRoomsRequest = new AlterAvailableRoomsRequest(hotelId.toString(), 1L);
-
-        mockPutApi(hotelService, "/rooms/deduct", asJsonString(alterAvailableRoomsRequest), OK);
-
-        PointsRequest pointsRequest = new PointsRequest(customerId.toString(), 5);
-
-        mockPutApi(customerService, "/points/deduct", asJsonString(pointsRequest), OK);
-
         emailService.stubFor(post(urlPathEqualTo("/email")).willReturn(aResponse().withStatus(OK.value())));
 
         ReservationRequest reservationRequest = new ReservationRequest(hotelId.toString(), customerId.toString());
@@ -247,11 +238,11 @@ public class ReservationIntegrationTest {
 
         hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
 
-        hotelService.verify(0,putRequestedFor(urlEqualTo("/rooms/deduct")).withRequestBody(containing(asJsonString(alterAvailableRoomsRequest))));
+        hotelService.verify(0,putRequestedFor(urlEqualTo("/rooms/deduct")));
 
-        customerService.verify(getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
+        customerService.verify(1,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
 
-        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")).withRequestBody(containing(asJsonString(pointsRequest))));
+        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")));
 
         emailService.verify(1,postRequestedFor(urlEqualTo("/email")));
 
@@ -272,19 +263,9 @@ public class ReservationIntegrationTest {
 
         mockGetApi(hotelId, hotelService, "/hotel/", asJsonString(hotel), OK);
 
-        AlterAvailableRoomsRequest alterAvailableRoomsRequest = new AlterAvailableRoomsRequest(hotelId.toString(), 1L);
-
-        mockPutApi(hotelService, "/rooms/deduct", asJsonString(alterAvailableRoomsRequest), OK);
-
-        PointsRequest pointsRequest = new PointsRequest(customerId.toString(), 5);
-
-        mockPutApi(customerService, "/points/deduct", asJsonString(pointsRequest), OK);
-
         emailService.stubFor(post(urlPathEqualTo("/email")).willReturn(aResponse().withStatus(OK.value())));
 
-
         ReservationRequest reservationRequest = new ReservationRequest(hotelId.toString(), customerId.toString());
-
 
         //when
         String reservationId = createReservation(reservationRequest);
@@ -304,11 +285,11 @@ public class ReservationIntegrationTest {
 
         hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
 
-        hotelService.verify(0,putRequestedFor(urlEqualTo("/rooms/deduct")).withRequestBody(containing(asJsonString(alterAvailableRoomsRequest))));
+        hotelService.verify(0,putRequestedFor(urlEqualTo("/rooms/deduct")));
 
         customerService.verify(1,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
 
-        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")).withRequestBody(containing(asJsonString(pointsRequest))));
+        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")));
 
         emailService.verify(1,postRequestedFor(urlEqualTo("/email")));
 
@@ -381,26 +362,17 @@ public class ReservationIntegrationTest {
 
         mockGetApi(customerId, customerService, "/points/", "100", OK);
 
-
         Hotel hotel = new Hotel(hotelId.toString(), 5L, "casa", 3L);
 
         mockGetApi(hotelId, hotelService, "/hotel/", asJsonString(hotel), OK);
 
-
         AlterAvailableRoomsRequest alterAvailableRoomsRequest = new AlterAvailableRoomsRequest(hotelId.toString(), 1L);
-
 
         mockPutApi(hotelService, "/rooms/deduct", asJsonString(alterAvailableRoomsRequest), INTERNAL_SERVER_ERROR);
 
-        PointsRequest pointsRequest = new PointsRequest(customerId.toString(), 5);
-
-        mockPutApi(customerService, "/points/deduct", asJsonString(pointsRequest), OK);
-
         emailService.stubFor(post(urlPathEqualTo("/email")).willReturn(aResponse().withStatus(OK.value())));
 
-
         ReservationRequest reservationRequest = new ReservationRequest(hotelId.toString(), customerId.toString());
-
 
         //when
         String reservationId = createReservation(reservationRequest);
@@ -424,7 +396,7 @@ public class ReservationIntegrationTest {
 
         customerService.verify(1,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
 
-        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")).withRequestBody(containing(asJsonString(pointsRequest))));
+        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")));
 
         emailService.verify(1,postRequestedFor(urlEqualTo("/email")));
 
