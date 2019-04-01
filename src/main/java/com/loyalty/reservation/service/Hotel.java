@@ -2,9 +2,13 @@ package com.loyalty.reservation.service;
 
 
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Getter
 public class Hotel {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Hotel.class);
 
     private String id;
 
@@ -24,5 +28,18 @@ public class Hotel {
     public Hotel(){
 
     }
+    public boolean reservationIsPossible(int numberOfRoomsNeeded, Long customerBonusPointsBalance){
 
+        if (availableRooms < numberOfRoomsNeeded) {
+            LOGGER.error("Available rooms {}, while requested rooms {}",availableRooms,numberOfRoomsNeeded);
+            return false;
+        }
+
+        if (customerBonusPointsBalance < requiredBonusPoints) {
+            LOGGER.error("Customer's available bonus points {}, while required points {}",customerBonusPointsBalance,requiredBonusPoints);
+            return false;
+        }
+
+        return true;
+    }
 }

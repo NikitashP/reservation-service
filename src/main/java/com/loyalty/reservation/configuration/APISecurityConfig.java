@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 
-import javax.annotation.PostConstruct;
-
 @Configuration
 @EnableWebSecurity
 @Order(1)
@@ -23,10 +21,6 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${http.public.auth-token}")
     private String principalRequestValue;
 
-    @PostConstruct
-    public void dsfsdf(){
-        System.out.println("sdfsdf");
-    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {

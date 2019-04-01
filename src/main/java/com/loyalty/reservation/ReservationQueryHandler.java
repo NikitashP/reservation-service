@@ -1,4 +1,4 @@
-package com.loyalty.reservation.query;
+package com.loyalty.reservation;
 
 import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.springframework.beans.factory.annotation.Autowired;

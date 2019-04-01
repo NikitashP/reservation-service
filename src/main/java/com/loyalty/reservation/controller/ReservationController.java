@@ -1,9 +1,9 @@
 package com.loyalty.reservation.controller;
 
+import com.loyalty.reservation.Reservation;
+import com.loyalty.reservation.ReservationQueryHandler;
 import com.loyalty.reservation.command.MakeNewReservationCommand;
 import com.loyalty.reservation.controller.request.ReservationRequest;
-import com.loyalty.reservation.query.Reservation;
-import com.loyalty.reservation.query.ReservationQueryHandler;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.model.AggregateNotFoundException;

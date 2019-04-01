@@ -1,21 +1,19 @@
 package com.loyalty.reservation.service;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
 @Component
 public class HotelService {
@@ -45,10 +43,18 @@ public class HotelService {
         headers.set(principalRequestHeader, principalRequestValue);
     }
 
-    public Hotel getHotel(String hotelId) {
+    public Optional<Hotel> getHotel(String hotelId) {
+
         final HttpEntity entity=new HttpEntity(headers);
-        ResponseEntity<Hotel> hotelResponseEntity = restTemplate.exchange(hotelServiceUri + "/hotel/" + hotelId, HttpMethod.GET, entity, Hotel.class);
-        return hotelResponseEntity.getBody();
+
+        try {
+            ResponseEntity<Hotel> hotelResponseEntity = restTemplate.exchange(hotelServiceUri + "/hotel/" + hotelId, HttpMethod.GET, entity, Hotel.class);
+            return Optional.ofNullable(hotelResponseEntity.getBody());
+        } catch (RestClientException e) {
+            LOGGER.error("Unable to find Hotel {}",hotelId, e);
+        }
+
+        return Optional.empty();
     }
 
     public Boolean deductAvailableRoom(String hotelId, long numberOfRoomsNeeded) {
@@ -57,7 +63,7 @@ public class HotelService {
             ResponseEntity<Void> responseEntity = restTemplate.exchange(hotelServiceUri + "/rooms/deduct", HttpMethod.PUT, entity, Void.class);
             return responseEntity.getStatusCode().equals(HttpStatus.OK);
         } catch (RestClientException e) {
-            LOGGER.error("Unable to deduct rooms", e);
+            LOGGER.error("Unable to deduct rooms for hotelId {}",hotelId, e);
         }
         return false;
     }
@@ -68,7 +74,7 @@ public class HotelService {
             ResponseEntity<Void> responseEntity = restTemplate.exchange(hotelServiceUri + "/rooms/add", HttpMethod.PUT, entity, Void.class);
             return responseEntity.getStatusCode().equals(HttpStatus.OK);
         } catch (RestClientException e) {
-            LOGGER.error("Unable to add rooms", e);
+            LOGGER.error("Unable to add rooms for hotelId {}",hotelId, e);
         }
         return false;
     }

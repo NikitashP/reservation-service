@@ -1,4 +1,4 @@
-package com.loyalty.reservation.query;
+package com.loyalty.reservation;
 
 import com.loyalty.reservation.domain.STATUS;
 import lombok.*;

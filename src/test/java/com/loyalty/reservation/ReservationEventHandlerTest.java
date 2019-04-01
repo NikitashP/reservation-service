@@ -1,4 +1,4 @@
-package com.loyalty.reservation.query;
+package com.loyalty.reservation;
 
 import com.loyalty.reservation.domain.STATUS;
 import com.loyalty.reservation.event.MakeNewReservationEvent;
@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+
+import java.util.Optional;
 
 import static com.loyalty.reservation.domain.STATUS.PENDING_APPROVAL;
 import static com.loyalty.reservation.domain.STATUS.RESERVED;
@@ -43,8 +45,19 @@ public class ReservationEventHandlerTest {
     public void testOnMakeNewReservationEventWhenHotelIsNotFound() {
         // Setup
         final MakeNewReservationEvent event = new MakeNewReservationEvent("id", "cid", "hid", STATUS.INITIATED);
+        doReturn(Optional.of(10L)).when(mockCustomerService).getAvailableBonusPoints(anyString());
+        doReturn(Optional.empty()).when(mockHotelService).getHotel(anyString());
+        Executable code = () -> reservationEventHandlerUnderTest.on(event);
+        assertThrows(IllegalStateException.class, code);
+    }
+
+    @Test
+    public void testOnMakeNewReservationEventWhenUnableToFindCustomerBonusPointsBalance() {
+        // Setup
+        final MakeNewReservationEvent event = new MakeNewReservationEvent("id", "cid", "hid", STATUS.INITIATED);
         Hotel hotel = new Hotel("1", 100L, "casa", 0L);
-        doReturn(10L).when(mockCustomerService).getAvailableBonusPoints(anyString());
+        doReturn(Optional.empty()).when(mockCustomerService).getAvailableBonusPoints(anyString());
+        doReturn(Optional.of(hotel)).when(mockHotelService).getHotel(anyString());
         Executable code = () -> reservationEventHandlerUnderTest.on(event);
         assertThrows(IllegalStateException.class, code);
     }
@@ -54,8 +67,8 @@ public class ReservationEventHandlerTest {
         // Setup
         final MakeNewReservationEvent event = new MakeNewReservationEvent("id", "cid", "hid", STATUS.INITIATED);
         Hotel hotel = new Hotel("1", 100L, "casa", 0L);
-        doReturn(10L).when(mockCustomerService).getAvailableBonusPoints(anyString());
-        doReturn(hotel).when(mockHotelService).getHotel(anyString());
+        doReturn(Optional.of(10L)).when(mockCustomerService).getAvailableBonusPoints(anyString());
+        doReturn(Optional.of(hotel)).when(mockHotelService).getHotel(anyString());
         // Run the test
         reservationEventHandlerUnderTest.on(event);
 
@@ -76,8 +89,8 @@ public class ReservationEventHandlerTest {
         // Setup
         final MakeNewReservationEvent event = new MakeNewReservationEvent("id", "cid", "hid", STATUS.INITIATED);
         Hotel hotel = new Hotel("1", 100L, "casa", 10L);
-        doReturn(10L).when(mockCustomerService).getAvailableBonusPoints(anyString());
-        doReturn(hotel).when(mockHotelService).getHotel(anyString());
+        doReturn(Optional.of(10L)).when(mockCustomerService).getAvailableBonusPoints(anyString());
+        doReturn(Optional.of(hotel)).when(mockHotelService).getHotel(anyString());
         // Run the test
         reservationEventHandlerUnderTest.on(event);
 
@@ -97,8 +110,8 @@ public class ReservationEventHandlerTest {
         // Setup
         final MakeNewReservationEvent event = new MakeNewReservationEvent("id", "cid", "hid", STATUS.INITIATED);
         Hotel hotel = new Hotel("1", 100L, "casa", 10L);
-        doReturn(100L).when(mockCustomerService).getAvailableBonusPoints(anyString());
-        doReturn(hotel).when(mockHotelService).getHotel(anyString());
+        doReturn(Optional.of(100L)).when(mockCustomerService).getAvailableBonusPoints(anyString());
+        doReturn(Optional.of(hotel)).when(mockHotelService).getHotel(anyString());
         doReturn(true).when(mockEmailService).notifyServiceOwner(anyString(), anyString(), anyString());
         doReturn(true).when(mockHotelService).deductAvailableRoom(anyString(), anyLong());
         doReturn(true).when(mockCustomerService).deductBonusPoints(anyString(), anyLong());

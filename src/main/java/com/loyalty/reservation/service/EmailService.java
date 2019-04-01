@@ -50,7 +50,7 @@ public class EmailService {
             ResponseEntity<Void> responseEntity = restTemplate.exchange(emailServiceUri + "/email", HttpMethod.POST, entity, Void.class);
             return responseEntity.getStatusCode().equals(HttpStatus.OK);
         }catch (RestClientException e){
-            LOGGER.error("Unable to deduct points",e);
+            LOGGER.error("Unable to send emails to {} with body {} and subject {}",receiver,body,subject,e);
         }
         return false;
     }
