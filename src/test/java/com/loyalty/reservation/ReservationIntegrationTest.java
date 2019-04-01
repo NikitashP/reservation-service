@@ -86,6 +86,7 @@ public class ReservationIntegrationTest {
         //when
         String reservationId = createReservation(reservationRequest);
 
+
         //then
         String reservationResponse = findReservation(reservationId);
 
@@ -98,6 +99,13 @@ public class ReservationIntegrationTest {
         String reservationEvents = findAllReservationEvents(reservationId);
 
         assertThat(reservationEvents).contains(STATUS.INITIATED.toString());
+
+        hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
+
+        customerService.verify(0,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
+
+        emailService.verify(0,postRequestedFor(urlEqualTo("/email")));
+
 
     }
 
@@ -133,6 +141,12 @@ public class ReservationIntegrationTest {
         String reservationEvents = findAllReservationEvents(reservationId);
 
         assertThat(reservationEvents).contains(STATUS.INITIATED.toString());
+
+        hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
+
+        customerService.verify(1,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
+
+        emailService.verify(0,postRequestedFor(urlEqualTo("/email")));
 
     }
 
@@ -177,6 +191,16 @@ public class ReservationIntegrationTest {
 
         assertThat(reservationEvents).contains(STATUS.INITIATED.toString());
 
+        hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
+
+        hotelService.verify(1,putRequestedFor(urlEqualTo("/rooms/deduct")).withRequestBody(containing(asJsonString(alterAvailableRoomsRequest))));
+
+        customerService.verify(1,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
+
+        customerService.verify(1,putRequestedFor(urlEqualTo("/points/deduct")).withRequestBody(containing(asJsonString(pointsRequest))));
+
+        emailService.verify(1,postRequestedFor(urlEqualTo("/email")));
+
     }
 
 
@@ -220,6 +244,16 @@ public class ReservationIntegrationTest {
         String reservationEvents = findAllReservationEvents(reservationId);
 
         assertThat(reservationEvents).contains(STATUS.INITIATED.toString());
+
+        hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
+
+        hotelService.verify(0,putRequestedFor(urlEqualTo("/rooms/deduct")).withRequestBody(containing(asJsonString(alterAvailableRoomsRequest))));
+
+        customerService.verify(getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
+
+        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")).withRequestBody(containing(asJsonString(pointsRequest))));
+
+        emailService.verify(1,postRequestedFor(urlEqualTo("/email")));
 
     }
 
@@ -268,6 +302,16 @@ public class ReservationIntegrationTest {
 
         assertThat(reservationEvents).contains(STATUS.INITIATED.toString());
 
+        hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
+
+        hotelService.verify(0,putRequestedFor(urlEqualTo("/rooms/deduct")).withRequestBody(containing(asJsonString(alterAvailableRoomsRequest))));
+
+        customerService.verify(1,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
+
+        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")).withRequestBody(containing(asJsonString(pointsRequest))));
+
+        emailService.verify(1,postRequestedFor(urlEqualTo("/email")));
+
     }
 
 
@@ -297,9 +341,7 @@ public class ReservationIntegrationTest {
 
         emailService.stubFor(post(urlPathEqualTo("/email")).willReturn(aResponse().withStatus(OK.value())));
 
-
         ReservationRequest reservationRequest = new ReservationRequest(hotelId.toString(), customerId.toString());
-
 
         //when
         String reservationId = createReservation(reservationRequest);
@@ -316,6 +358,16 @@ public class ReservationIntegrationTest {
         String reservationEvents = findAllReservationEvents(reservationId);
 
         assertThat(reservationEvents).contains(STATUS.INITIATED.toString());
+
+        hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
+
+        hotelService.verify(1,putRequestedFor(urlEqualTo("/rooms/deduct")).withRequestBody(containing(asJsonString(alterAvailableRoomsRequest))));
+
+        customerService.verify(1,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
+
+        customerService.verify(1,putRequestedFor(urlEqualTo("/points/deduct")).withRequestBody(containing(asJsonString(pointsRequest))));
+
+        emailService.verify(1,postRequestedFor(urlEqualTo("/email")));
 
     }
 
@@ -365,6 +417,16 @@ public class ReservationIntegrationTest {
         String reservationEvents = findAllReservationEvents(reservationId);
 
         assertThat(reservationEvents).contains(STATUS.INITIATED.toString());
+
+        hotelService.verify(1,getRequestedFor(urlEqualTo("/hotel/"+hotelId.toString())));
+
+        hotelService.verify(1,putRequestedFor(urlEqualTo("/rooms/deduct")).withRequestBody(containing(asJsonString(alterAvailableRoomsRequest))));
+
+        customerService.verify(1,getRequestedFor(urlEqualTo("/points/"+customerId.toString())));
+
+        customerService.verify(0,putRequestedFor(urlEqualTo("/points/deduct")).withRequestBody(containing(asJsonString(pointsRequest))));
+
+        emailService.verify(1,postRequestedFor(urlEqualTo("/email")));
 
     }
 

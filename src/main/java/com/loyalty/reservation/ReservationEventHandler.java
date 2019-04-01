@@ -58,6 +58,7 @@ public class ReservationEventHandler {
 
         if(!hotel.reservationIsPossible(numberOfRoomsNeeded,customerBonusPointsBalance)){
             reservationRepository.save(new Reservation(event.getId(), event.getHotelId(), event.getCustomerId(), PENDING_APPROVAL));
+            emailService.notifyServiceOwner(serviceOwnerMailId, "Status changed from INITIATED to PENDING_APPROVAL", "Reservation Needs Attention | Id: " + event.getId());
             return;
         }
 
