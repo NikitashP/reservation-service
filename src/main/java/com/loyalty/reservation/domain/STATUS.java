@@ -2,6 +2,6 @@ package com.loyalty.reservation.domain;
 
 public enum STATUS {
 
-    INITIATED,PENDING_APPROVAL,RESERVED
+    INITIATED,PENDING_APPROVAL,RESERVED,FAILED
 
 }

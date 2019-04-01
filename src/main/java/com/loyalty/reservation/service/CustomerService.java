@@ -69,16 +69,6 @@ public class CustomerService {
         return false;
     }
 
-    public boolean addBonusPoints(String customerId, long requiredBonusPoints) {
-        final HttpEntity<PointsRequest> entity=new HttpEntity(new PointsRequest(customerId,requiredBonusPoints),headers);
-        try {
-            ResponseEntity<Void> responseEntity = restTemplate.exchange(customerServiceUri + "/points/add", HttpMethod.PUT, entity, Void.class);
-            return responseEntity.getStatusCode().equals(HttpStatus.OK);
-        } catch (RestClientException e) {
-            LOGGER.error("Unable to add points", e);
-        }
-        return false;
-    }
 
     @Getter
     @Setter

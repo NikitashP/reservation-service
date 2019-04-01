@@ -12,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import static com.loyalty.reservation.domain.STATUS.PENDING_APPROVAL;
-import static com.loyalty.reservation.domain.STATUS.RESERVED;
+import static com.loyalty.reservation.domain.STATUS.*;
 
 @Component
 public class ReservationEventHandler {
@@ -46,9 +45,16 @@ public class ReservationEventHandler {
     @EventHandler
     public void on(MakeNewReservationEvent event){
 
-        long customerBonusPointsBalance=customerService.getAvailableBonusPoints(event.getCustomerId()).orElseThrow(() -> new IllegalStateException("Customer must have bonus points to make reservation"));
+        Hotel hotel = hotelService.getHotel(event.getHotelId()).orElseThrow(()-> {
+            reservationRepository.save(new Reservation(event.getId(), event.getHotelId(), event.getCustomerId(), FAILED));
+            return new IllegalStateException("Hotel must exist to make a reservation");
+        });
 
-        Hotel hotel = hotelService.getHotel(event.getHotelId()).orElseThrow(()-> new IllegalStateException("Hotel must exist to make a reservation"));
+        long customerBonusPointsBalance=customerService.getAvailableBonusPoints(event.getCustomerId()).orElseThrow(() -> {
+            reservationRepository.save(new Reservation(event.getId(), event.getHotelId(), event.getCustomerId(), FAILED));
+            return new IllegalStateException("Customer must have bonus points to make reservation");
+        });
+
 
         if(!hotel.reservationIsPossible(numberOfRoomsNeeded,customerBonusPointsBalance)){
             reservationRepository.save(new Reservation(event.getId(), event.getHotelId(), event.getCustomerId(), PENDING_APPROVAL));
