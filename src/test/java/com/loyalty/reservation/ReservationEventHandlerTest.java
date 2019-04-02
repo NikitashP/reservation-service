@@ -2,6 +2,9 @@ package com.loyalty.reservation;
 
 import com.loyalty.reservation.domain.STATUS;
 import com.loyalty.reservation.event.MakeNewReservationEvent;
+import com.loyalty.reservation.query.Reservation;
+import com.loyalty.reservation.event.ReservationEventHandler;
+import com.loyalty.reservation.query.ReservationRepository;
 import com.loyalty.reservation.service.CustomerService;
 import com.loyalty.reservation.service.EmailService;
 import com.loyalty.reservation.service.Hotel;

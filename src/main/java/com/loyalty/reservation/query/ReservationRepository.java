@@ -1,4 +1,4 @@
-package com.loyalty.reservation;
+package com.loyalty.reservation.query;
 
 import org.springframework.data.repository.CrudRepository;
 

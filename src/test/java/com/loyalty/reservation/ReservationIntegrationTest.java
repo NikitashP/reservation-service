@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.loyalty.reservation.controller.request.ReservationRequest;
 import com.loyalty.reservation.domain.STATUS;
+import com.loyalty.reservation.query.Reservation;
 import com.loyalty.reservation.service.Hotel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
